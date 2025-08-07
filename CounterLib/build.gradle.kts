@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -29,6 +30,28 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("gpr") {
+            groupId = "com.exmaple"
+            artifactId = "counterlib"
+            version = "1.0.4"
+            artifact("$buildDir/outputs/aar/CounterLib-release.aar")
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/SotheaHurn/Counter-Demo")
+            credentials {
+                username = project.findProperty("gpr.username") as String?
+                password = project.findProperty("gpr.password") as String?
+            }
+        }
     }
 }
 
